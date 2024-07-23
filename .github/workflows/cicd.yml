@@ -1,0 +1,105 @@
+
+name: Continuous Integration
+
+on:
+  release:
+    types: [ created ]
+    tags:
+      - v*
+  push:
+  pull_request:
+
+env:
+  TAG_VERSION: ${{ github.event.release.tag_name || 'v0.0.0' }}
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-22.04
+
+    strategy:
+      matrix:
+        target: [ win64 ] # linux64
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - name: Setup
+      run: sudo ./build_and_test/10-setup.sh build_and_test "$TAG_VERSION" ${{ matrix.target }}
+      
+    - name: Libopenh264
+      run: sudo ./build_and_test/20-libopenh264.sh build_and_test "$TAG_VERSION" ${{ matrix.target }}
+      
+    - name: Zlib
+      run: sudo ./build_and_test/20-zlib.sh build_and_test "$TAG_VERSION" ${{ matrix.target }}
+      
+    - name: FFmpeg
+      run: sudo ./build_and_test/60-ffmpeg.sh build_and_test "$TAG_VERSION" ${{ matrix.target }}
+      
+    - name: Test
+      run: sudo ./build_and_test/70-test.sh build_and_test "$TAG_VERSION" ${{ matrix.target }}
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build_and_test
+        path: ./artifacts/build_and_test
+
+  nuget:
+    runs-on: ubuntu-22.04
+
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    needs: [ build_and_test ]
+
+    steps:
+    - name: Checkout 
+      uses: actions/checkout@v4
+
+    - name: Download Artifact win64
+      uses: actions/download-artifact@v4
+      with:
+        name: build_and_test
+        path: ./artifacts/build_and_test
+        merge-multiple: true
+
+    - name: Setup
+      run: sudo ./nuget/10-setup.sh nuget "$TAG_VERSION"
+
+    - name: Nuget
+      run: sudo ./nuget/50-nuget.sh nuget "$TAG_VERSION"
+
+    - name: Page
+      run: sudo ./nuget/70-page.sh nuget "$TAG_VERSION"
+
+    - name: Upload Release Asset
+      if: ${{ github.event_name == 'release' }}
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./artifacts/nuget/nuget/nuget.csproj.zip
+        asset_name: nuget.csproj.zip
+        asset_content_type: application/zip
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget
+        path: ./artifacts/nuget
+
+    - name: Upload artifact for pages
+      if: ${{ github.event_name == 'release' }}
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./artifacts/nuget/page
+
+    - name: Deploy to GitHub Pages
+      if: ${{ github.event_name == 'release' }}
+      uses: actions/deploy-pages@v4
