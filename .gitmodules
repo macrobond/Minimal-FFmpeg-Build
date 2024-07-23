@@ -1,0 +1,10 @@
+[submodule "submodules/FFmpeg"]
+	path = submodules/FFmpeg
+	url = https://github.com/FFmpeg/FFmpeg.git
+	branch = release/7.0
+[submodule "submodules/openh264"]
+	path = submodules/openh264
+	url = https://github.com/cisco/openh264.git
+[submodule "submodules/zlib"]
+	path = submodules/zlib
+	url = https://github.com/madler/zlib.git
