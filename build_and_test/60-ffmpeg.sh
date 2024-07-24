@@ -5,7 +5,7 @@ TARGET=$2
 
 . ./common.sh $VERSION $TARGET
 
-VERSION="${a:1}" # substring from 1st character
+VERSION="${VERSION:1}" # substring from 1st character
 
 FFMPEG_VER_FILEVERSION="${VERSION},0"
 FFMPEG_VER_FILEVERSION="${FFMPEG_VER_FILEVERSION//./,}" # replace all dots with commas

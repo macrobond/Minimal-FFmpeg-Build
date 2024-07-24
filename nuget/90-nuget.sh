@@ -4,6 +4,7 @@ set -e
 set -o pipefail
 
 VERSION=$1
+VERSION="${VERSION:1}" # substring from 1st character
 
 [[ $(grep -i Microsoft /proc/version) ]] && IS_WSL=true
 
@@ -36,13 +37,9 @@ working_directory=${ARTIFACTS}/nuget
 mkdir -p "$working_directory"
 pushd "$working_directory"
 
-mkdir -p files/runtimes/win-x64/native
-cp -f $ARTIFACTS/win64/ffmpeg/ffmpeg.exe files/runtimes/win-x64/native/ffmpeg.exe
+cp -f $ARTIFACTS/nuget_files files
 
-# mkdir -p files/runtimes/linux-x64/native
-# cp -f $ARTIFACTS/linux64/ffmpeg/ffmpeg files/runtimes/linux-x64/native/ffmpeg
-
-cp $ARTIFACTS/**.log files/
+# cp $ARTIFACTS/**.log files/
 
 echo "$NUGET_CSPROJ" > nuget.csproj
 
