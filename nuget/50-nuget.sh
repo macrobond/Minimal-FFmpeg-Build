@@ -67,7 +67,7 @@ if [[ "$IS_WSL" == "true" ]]; then
 fi
 
 echo "nupkg"
-local output="$working_directory"/$(ls bin/Release/*.nupkg)
+output="$working_directory"/$(ls bin/Release/*.nupkg)
 echo "$output"
 if [[ "$IS_WSL" == "true" ]]; then
     echo $(wslpath -w $output)
