@@ -1,10 +1,9 @@
 #!/bin/bash
 
-set -e
-set -o pipefail
-
 VERSION=$1
 VERSION="${VERSION:1}" # substring from 1st character
+
+. ./common.sh $VERSION
 
 [[ $(grep -i Microsoft /proc/version) ]] && IS_WSL=true
 

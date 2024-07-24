@@ -3,8 +3,8 @@
 set -e
 set -o pipefail
 
-TARGET=$1
-VERSION=$2
+VERSION=$1
+TARGET=$2
 
 if [[ $TARGET == win64 ]]; then
     export CC=x86_64-w64-mingw32-gcc

@@ -14,7 +14,7 @@ cleanup() {
     git submodule foreach --recursive git clean -df
 }
 
-# trap cleanup EXIT
+trap cleanup EXIT
 # cleanup
 
 [[ -d "$ROOT_DIR"/artifacts ]] || mkdir -p "$ROOT_DIR"/artifacts

@@ -1,12 +1,8 @@
 #!/bin/bash
 
-set -e
-set -o pipefail
-
 VERSION=$1
 
-set -e
-set -o pipefail
+. ./common.sh $VERSION
 
 if [[ "$(id -u)" != 0 ]]; then
     echo Please run this script as root!

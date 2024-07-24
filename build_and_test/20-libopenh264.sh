@@ -38,7 +38,7 @@ elif [[ $TARGET == linux64 ]]; then
     )
 else
     echo "Unknown target"
-    return -1
+    exit 1
 fi
 
 make -j$(nproc) "${myconf[@]}" install-static
