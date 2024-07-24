@@ -37,7 +37,7 @@ working_directory=${ARTIFACTS}/nuget
 mkdir -p "$working_directory"
 pushd "$working_directory"
 
-cp -fr $ARTIFACTS/nuget_files files
+cp -fr $ARTIFACTS_NO_NAME/build_and_test/nuget_files files
 
 # cp $ARTIFACTS/**.log files/
 

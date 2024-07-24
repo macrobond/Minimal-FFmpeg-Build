@@ -18,7 +18,8 @@ fi
 export FFBUILD_PREFIX=/opt/ffbuild
 
 ROOT_DIR="$(pwd)"
-export ARTIFACTS="$ROOT_DIR/artifacts/$NAME"
+export ARTIFACTS_NO_NAME="$ROOT_DIR/artifacts"
+export ARTIFACTS="$ARTIFACTS_NO_NAME/$NAME"
 export SUBMODULES="$ROOT_DIR/submodules"
 
 export PKG_CONFIG=pkg-config
