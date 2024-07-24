@@ -4,8 +4,6 @@ name: Continuous Integration
 on:
   release:
     types: [ created ]
-    tags:
-    - 'v*'
   push:
     branches: [ main, dev ]
   pull_request:
