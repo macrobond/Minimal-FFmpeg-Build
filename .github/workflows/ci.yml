@@ -3,14 +3,14 @@ name: Continuous Integration
 
 on:
   release:
-    types: [ published ]
+    types: [ created ]
   push:
     branches: [ main, dev ]
   pull_request:
     branches: [ main, dev ]
 
 env:
-  VERSION: ${{ github.event.release.tag_name || '0,0,0' }}
+  TAG_VERSION: ${{ github.event.release.tag_name || 'v0,0,0' }}
 
 permissions:
   contents: read
@@ -30,24 +30,24 @@ jobs:
         submodules: "true"
 
     - name: Setup
-      run: sudo ./build_and_test/10-setup.sh ${{ matrix.target }} "$VERSION"
+      run: sudo ./build_and_test/10-setup.sh ${{ matrix.target }} "$TAG_VERSION"
       
     - name: Libopenh264
-      run: sudo ./build_and_test/20-libopenh264.sh ${{ matrix.target }} "$VERSION"
+      run: sudo ./build_and_test/20-libopenh264.sh ${{ matrix.target }} "$TAG_VERSION"
       
     - name: Zlib
-      run: sudo ./build_and_test/20-zlib.sh ${{ matrix.target }} "$VERSION"
+      run: sudo ./build_and_test/20-zlib.sh ${{ matrix.target }} "$TAG_VERSION"
       
     - name: FFmpeg
-      run: sudo ./build_and_test/60-ffmpeg.sh ${{ matrix.target }} "$VERSION"
+      run: sudo ./build_and_test/60-ffmpeg.sh ${{ matrix.target }} "$TAG_VERSION"
       
     - name: Test
-      run: sudo ./build_and_test/70-test.sh ${{ matrix.target }} "$VERSION"
+      run: sudo ./build_and_test/70-test.sh ${{ matrix.target }} "$TAG_VERSION"
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: build
+        name: build_${{ matrix.target }}
         path: ./artifacts
 
   nuget:
@@ -57,35 +57,24 @@ jobs:
 
     steps:
 
-    - name: Checkout
+    - name: Checkout 
       uses: actions/checkout@v4
 
-    - name: Download Artifact
+    - name: Download Artifact win64
       uses: actions/download-artifact@v4
       with:
-        name: build
+        name: build_win64
+
+    # - name: Download Artifact win64
+    #   uses: actions/download-artifact@v4
+    #   with:
+    #     name: build_linux64
 
     - name: Setup
-      run: sudo ./nuget/10-setup.sh "$VERSION"
+      run: sudo ./nuget/10-setup.sh "$TAG_VERSION"
 
     - name: Nuget
-      run: sudo ./nuget/90-nuget.sh "$VERSION"
-
-    # - name: Create Release
-    #   if: ${{ github.event_name == 'release' }}
-    #   id: create_release
-    #   uses: actions/create-release@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     tag_name: ${{ github.ref }}
-    #     release_name: Release ${{ github.ref }}
-    #     body: |
-    #       Changes in this Release
-    #       - First Change
-    #       - Second Change
-    #     draft: false
-    #     prerelease: false
+      run: sudo ./nuget/90-nuget.sh "$TAG_VERSION"
 
     - name: Upload Release Asset
       if: ${{ github.event_name == 'release' }}
@@ -94,7 +83,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        upload_url: ${{ github.event.release.upload_url }}
         asset_path: ./my-artifact.zip
         asset_name: my-artifact.zip
         asset_content_type: application/zip

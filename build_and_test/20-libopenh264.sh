@@ -1,11 +1,11 @@
 #!/bin/bash
 
-TARGET=$1
-VERSION=$2
+VERSION=$1
+TARGET=$2
 
-. ./common.sh $TARGET $VERSION
+. ./common.sh $VERSION $TARGET
 
-cd $SUBMODULES/openh264
+pushd $SUBMODULES/openh264
 
 myconf=(
     PREFIX="$FFBUILD_PREFIX"
@@ -42,3 +42,5 @@ else
 fi
 
 make -j$(nproc) "${myconf[@]}" install-static
+
+popd

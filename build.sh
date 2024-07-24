@@ -2,7 +2,7 @@
 
 set -xe
 
-version=0,0,0
+version="v0.0.0"
 
 ROOT_DIR="$(pwd)"
 
@@ -21,13 +21,11 @@ cleanup() {
 rm -fr "$ROOT_DIR"/artifacts/*
 
 for target in win64; do
-    for file_name in $(ls -1d "$ROOT_DIR"/build_and_test/??-* | sort -u); do
-        cd $ROOT_DIR
-        sudo $file_name $target $version
+    for name in $(ls -1d "$ROOT_DIR"/build_and_test/??-* | sort -u); do
+        sudo $name $version $target
     done
 done
 
-for file_name in $(ls -1d "$ROOT_DIR"/nuget/??-* | sort -u); do
-    cd $ROOT_DIR
-    # . $file_name $version
+for name in $(ls -1d "$ROOT_DIR"/nuget/??-* | sort -u); do
+    # sudo $name $version
 done

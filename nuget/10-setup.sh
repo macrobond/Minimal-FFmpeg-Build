@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-TARGET=$1
+VERSION=$1
 
 set -e
 set -o pipefail

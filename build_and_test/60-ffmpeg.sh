@@ -1,14 +1,19 @@
 #!/bin/bash
 
-TARGET=$1
-VERSION=$2
+VERSION=$1
+TARGET=$2
 
-. ./common.sh $TARGET $VERSION
+. ./common.sh $VERSION $TARGET
+
+VERSION="${a:1}" # substring from 1st character
 
 FFMPEG_VER_FILEVERSION="${VERSION},0"
-FFMPEG_VER_FILEVERSION_STR="${VERSION},0"
+FFMPEG_VER_FILEVERSION="${FFMPEG_VER_FILEVERSION//./,}" # replace all dots with commas
+FFMPEG_VER_FILEVERSION_STR=$FFMPEG_VER_FILEVERSION
 
-cd $SUBMODULES/FFmpeg
+EXTRA_VERSION="min-build_$VERSION"
+
+pushd $SUBMODULES/FFmpeg
 
 FFTOOLSRES_RC="
 VS_VERSION_INFO VERSIONINFO
@@ -64,7 +69,7 @@ echo "$FFTOOLSRES_RC" >> fftools/fftoolsres.rc
     --ar="$AR" \
     --ranlib="$RANLIB" \
     --nm="$NM" \
-    --extra-version="$FFMPEG_EXTRA_VERSION"
+    --extra-version="$EXTRA_VERSION"
 
 make -j$(nproc) V=1
 
@@ -80,3 +85,5 @@ else
     # mkdir -p $ARTIFACTS/nuget_files/runtimes/linux-x64/native
     # cp -f ./ffmpeg $ARTIFACTS/nuget_files/runtimes/linux-x64/native/ffmpeg
 fi
+
+popd

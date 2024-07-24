@@ -1,9 +1,9 @@
 #!/bin/bash
 
-TARGET=$1
-VERSION=$2
+VERSION=$1
+TARGET=$2
 
-. ./common.sh $TARGET $VERSION
+. ./common.sh $VERSION $TARGET
 
 if [[ "$(id -u)" != 0 ]]; then
     echo Please run this script as root!

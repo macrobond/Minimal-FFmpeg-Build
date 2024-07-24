@@ -34,7 +34,7 @@ echo $NUGET_CSPROJ
 working_directory=${ARTIFACTS}/nuget
 
 mkdir -p "$working_directory"
-cd "$working_directory"
+pushd "$working_directory"
 
 mkdir -p files/runtimes/win-x64/native
 cp -f $ARTIFACTS/win64/ffmpeg/ffmpeg.exe files/runtimes/win-x64/native/ffmpeg.exe
@@ -86,3 +86,5 @@ echo "$tar"
 if [[ "$IS_WSL" == "true" ]]; then
     echo $(wslpath -w $tar)
 fi
+
+popd
