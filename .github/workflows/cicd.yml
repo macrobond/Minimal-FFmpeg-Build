@@ -4,6 +4,8 @@ name: Continuous Integration
 on:
   release:
     types: [ created ]
+    tags:
+    - 'v*'
   push:
     branches: [ main, dev ]
   pull_request:
@@ -11,9 +13,6 @@ on:
 
 env:
   TAG_VERSION: ${{ github.event.release.tag_name || 'v0.0.0' }}
-
-permissions:
-  contents: read
 
 jobs:
   build_and_test:
@@ -52,7 +51,12 @@ jobs:
 
   nuget:
     runs-on: ubuntu-22.04
-    
+
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
     needs: [ build_and_test ]
 
     steps:
@@ -81,17 +85,24 @@ jobs:
         name: github-pages
         path: ./artifacts/nuget/page
 
-    - name: Upload Release Asset
-      if: ${{ github.event_name == 'release' }}
-      id: upload-release-asset 
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./artifacts/nuget/nuget/nuget.csproj.zip
-        asset_name: nuget.csproj.zip
-        asset_content_type: application/zip
+    # - name: Upload Release Asset
+    #   if: ${{ github.event_name == 'release' }}
+    #   uses: actions/upload-release-asset@v1
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   with:
+    #     upload_url: ${{ github.event.release.upload_url }}
+    #     asset_path: ./artifacts/nuget/nuget/nuget.csproj.zip
+    #     asset_name: nuget.csproj.zip
+    #     asset_content_type: application/zip
+
+    - name: 'Upload Release Asset'
+    run: |
+        cd ${{github.workspace}}/artifacts/nuget/nuget
+        gh release upload ${{github.event.release.tag_name}} nuget.csproj.zip
+    env:
+      GITHUB_TOKEN: ${{ github.TOKEN }}
+    shell: bash
 
     - name: Deploy to GitHub Pages
       if: ${{ github.event_name == 'release' }}
