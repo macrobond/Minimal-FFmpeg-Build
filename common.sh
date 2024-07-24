@@ -3,8 +3,9 @@
 set -e
 set -o pipefail
 
-VERSION=$1
-TARGET=$2
+NAME=$1
+VERSION=$2
+TARGET=$3
 
 if [[ $TARGET == win64 ]]; then
     export CC=x86_64-w64-mingw32-gcc
@@ -17,7 +18,7 @@ fi
 export FFBUILD_PREFIX=/opt/ffbuild
 
 ROOT_DIR="$(pwd)"
-export ARTIFACTS="$ROOT_DIR/artifacts"
+export ARTIFACTS="$ROOT_DIR/$NAME/artifacts"
 export SUBMODULES="$ROOT_DIR/submodules"
 
 export PKG_CONFIG=pkg-config

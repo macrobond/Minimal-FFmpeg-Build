@@ -1,9 +1,10 @@
 #!/bin/bash
 
-VERSION=$1
-TARGET=$2
+NAME=$1
+VERSION=$2
+TARGET=$3
 
-. ./common.sh $VERSION $TARGET
+. ./common.sh $NAME $VERSION $TARGET
 
 pushd $SUBMODULES/zlib
 

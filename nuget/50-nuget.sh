@@ -1,9 +1,10 @@
 #!/bin/bash
 
-VERSION=$1
+NAME=$1
+VERSION=$2
 VERSION="${VERSION:1}" # substring from 1st character
 
-. ./common.sh $VERSION
+. ./common.sh $NAME $VERSION
 
 [[ $(grep -i Microsoft /proc/version) ]] && IS_WSL=true
 

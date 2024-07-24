@@ -1,8 +1,9 @@
 #!/bin/bash
 
-VERSION=$1
+NAME=$1
+VERSION=$2
 
-. ./common.sh $VERSION
+. ./common.sh $NAME $VERSION
 
 if [[ "$(id -u)" != 0 ]]; then
     echo Please run this script as root!
