@@ -36,7 +36,7 @@ working_directory=${ARTIFACTS}/nuget
 mkdir -p "$working_directory"
 pushd "$working_directory"
 
-cp -f $ARTIFACTS/nuget_files files
+cp -fr $ARTIFACTS/nuget_files files
 
 # cp $ARTIFACTS/**.log files/
 
@@ -44,7 +44,7 @@ echo "$NUGET_CSPROJ" > nuget.csproj
 
 dotnet pack
 
-tar -czvf nuget.csproj.tar.gz nuget.csproj files
+tar -cfvz nuget.csproj.zip nuget.csproj files
 
 echo ls files/runtimes/win-x64/native/
 ls -lh files/runtimes/win-x64/native/
@@ -59,9 +59,6 @@ if [[ "$IS_WSL" == "true" ]]; then
     echo VersionInfo
     /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -Command "(dir .\files\runtimes\win-x64\native\ffmpeg.exe).VersionInfo | fl"
 fi
-
-echo ffmpeg.exe -L
-wine files/runtimes/win-x64/native/ffmpeg.exe -L
 
 echo nupkg proj
 echo "$working_directory"

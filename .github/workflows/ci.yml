@@ -76,6 +76,12 @@ jobs:
     - name: Page
       run: sudo ./nuget/70-page.sh "$TAG_VERSION"
 
+    - name: Upload Artifact for GitHub Pages
+      uses: actions/upload-artifact@v4
+      with:
+        name: github-pages
+        path: ./artifacts/page
+
     - name: Upload Release Asset
       if: ${{ github.event_name == 'release' }}
       id: upload-release-asset 
@@ -88,14 +94,6 @@ jobs:
         asset_name: my-artifact.zip
         asset_content_type: application/zip
 
-    - name: Upload Artifact for GitHub Pages
-      if: ${{ github.event_name == 'release' }}
-      uses: actions/upload-artifact@v4
-      with:
-        name: github-pages
-        path: ./artifacts/page
-
     - name: Deploy to GitHub Pages
       if: ${{ github.event_name == 'release' }}
       uses: actions/deploy-pages@v4
-
