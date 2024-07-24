@@ -71,7 +71,10 @@ jobs:
       run: sudo ./nuget/10-setup.sh "$TAG_VERSION"
 
     - name: Nuget
-      run: sudo ./nuget/90-nuget.sh "$TAG_VERSION"
+      run: sudo ./nuget/50-nuget.sh "$TAG_VERSION"
+
+    - name: Page
+      run: sudo ./nuget/70-page.sh "$TAG_VERSION"
 
     - name: Upload Release Asset
       if: ${{ github.event_name == 'release' }}

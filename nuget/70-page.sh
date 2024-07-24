@@ -1,7 +1,6 @@
 #!/bin/bash
 
 VERSION=$1
-VERSION="${VERSION:1}" # substring from 1st character
 
 . ./common.sh $VERSION
 
