@@ -1,11 +1,12 @@
 #!/bin/bash
 
-TARGET=$1
+NAME=$1
 VERSION=$2
+TARGET=$3
 
-. ./common.sh $TARGET $VERSION
+. ./common.sh $NAME $VERSION $TARGET
 
-cd $SUBMODULES/openh264
+pushd $SUBMODULES/openh264
 
 myconf=(
     PREFIX="$FFBUILD_PREFIX"
@@ -38,7 +39,9 @@ elif [[ $TARGET == linux64 ]]; then
     )
 else
     echo "Unknown target"
-    return -1
+    exit 1
 fi
 
 make -j$(nproc) "${myconf[@]}" install-static
+
+popd

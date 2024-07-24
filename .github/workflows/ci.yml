@@ -3,14 +3,14 @@ name: Continuous Integration
 
 on:
   release:
-    types: [ published ]
+    types: [ created ]
   push:
     branches: [ main, dev ]
   pull_request:
     branches: [ main, dev ]
 
 env:
-  VERSION: ${{ github.event.release.tag_name || '0,0,0' }}
+  TAG_VERSION: ${{ github.event.release.tag_name || 'v0.0.0' }}
 
 permissions:
   contents: read
@@ -27,28 +27,28 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       with:
-        submodules: "true"
+        submodules: true
 
     - name: Setup
-      run: sudo ./build_and_test/10-setup.sh ${{ matrix.target }} "$VERSION"
+      run: sudo ./build_and_test/10-setup.sh build_and_test "$TAG_VERSION" ${{ matrix.target }}
       
     - name: Libopenh264
-      run: sudo ./build_and_test/20-libopenh264.sh ${{ matrix.target }} "$VERSION"
+      run: sudo ./build_and_test/20-libopenh264.sh build_and_test "$TAG_VERSION" ${{ matrix.target }}
       
     - name: Zlib
-      run: sudo ./build_and_test/20-zlib.sh ${{ matrix.target }} "$VERSION"
+      run: sudo ./build_and_test/20-zlib.sh build_and_test "$TAG_VERSION" ${{ matrix.target }}
       
     - name: FFmpeg
-      run: sudo ./build_and_test/60-ffmpeg.sh ${{ matrix.target }} "$VERSION"
+      run: sudo ./build_and_test/60-ffmpeg.sh build_and_test "$TAG_VERSION" ${{ matrix.target }}
       
     - name: Test
-      run: sudo ./build_and_test/70-test.sh ${{ matrix.target }} "$VERSION"
+      run: sudo ./build_and_test/70-test.sh build_and_test "$TAG_VERSION" ${{ matrix.target }}
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: build
-        path: ./artifacts
+        name: build_and_test
+        path: ./artifacts/build_and_test
 
   nuget:
     runs-on: ubuntu-22.04
@@ -56,36 +56,30 @@ jobs:
     needs: [ build_and_test ]
 
     steps:
-
-    - name: Checkout
+    - name: Checkout 
       uses: actions/checkout@v4
 
-    - name: Download Artifact
+    - name: Download Artifact win64
       uses: actions/download-artifact@v4
       with:
-        name: build
+        name: build_and_test
+        path: ./artifacts/build_and_test
+        merge-multiple: true
 
     - name: Setup
-      run: sudo ./nuget/10-setup.sh "$VERSION"
+      run: sudo ./nuget/10-setup.sh nuget "$TAG_VERSION"
 
     - name: Nuget
-      run: sudo ./nuget/90-nuget.sh "$VERSION"
+      run: sudo ./nuget/50-nuget.sh nuget "$TAG_VERSION"
 
-    # - name: Create Release
-    #   if: ${{ github.event_name == 'release' }}
-    #   id: create_release
-    #   uses: actions/create-release@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     tag_name: ${{ github.ref }}
-    #     release_name: Release ${{ github.ref }}
-    #     body: |
-    #       Changes in this Release
-    #       - First Change
-    #       - Second Change
-    #     draft: false
-    #     prerelease: false
+    - name: Page
+      run: sudo ./nuget/70-page.sh nuget "$TAG_VERSION"
+
+    - name: Upload Artifact for GitHub Pages
+      uses: actions/upload-artifact@v4
+      with:
+        name: github-pages
+        path: ./artifacts/nuget/page
 
     - name: Upload Release Asset
       if: ${{ github.event_name == 'release' }}
@@ -94,8 +88,17 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./my-artifact.zip
-        asset_name: my-artifact.zip
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./artifacts/nuget/nuget.csproj.zip
+        asset_name: nuget.csproj.zip
         asset_content_type: application/zip
 
+    - name: Deploy to GitHub Pages
+      if: ${{ github.event_name == 'release' }}
+      uses: actions/deploy-pages@v4
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget
+        path: ./artifacts/nuget

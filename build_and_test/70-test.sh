@@ -1,9 +1,10 @@
 #!/bin/bash
 
-TARGET=$1
+NAME=$1
 VERSION=$2
+TARGET=$3
 
-. ./common.sh $TARGET $VERSION
+. ./common.sh $NAME $VERSION $TARGET
 
 FRAME_RATE=60
 FRAME_COUNT=$(( FRAME_RATE * 5 ))
@@ -15,7 +16,7 @@ log="-v $log_level"
 working_directory=${ARTIFACTS}/${TARGET}_test
 
 mkdir -p $working_directory
-cd "$working_directory"
+pushd "$working_directory"
 
 if [[ $TARGET == win64 ]]; then
     ffmpeg_bin="wine $SUBMODULES/FFmpeg/ffmpeg.exe"
@@ -49,3 +50,5 @@ $ffmpeg_bin $log -progress TestOutputFile.gif.log -y -framerate 60 -i %d.png -i 
 $ffmpeg_bin $log -progress TextOutputFile.mp4.log -y -framerate 60 -i %d.png -r 60 -codec:v libopenh264 TextOutputFile.mp4
 
 echo -e "\033[0;92mall test run !\033[0m"
+
+popd

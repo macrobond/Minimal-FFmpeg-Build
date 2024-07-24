@@ -1,11 +1,12 @@
 #!/bin/bash
 
-TARGET=$1
+NAME=$1
 VERSION=$2
+TARGET=$3
 
-. ./common.sh $TARGET $VERSION
+. ./common.sh $NAME $VERSION $TARGET
 
-cd $SUBMODULES/zlib
+pushd $SUBMODULES/zlib
 
 myconf=(
     --prefix="$FFBUILD_PREFIX"
@@ -18,3 +19,5 @@ myconf=(
 ./configure "${myconf[@]}"
 make -j$(nproc)
 make install
+
+popd
