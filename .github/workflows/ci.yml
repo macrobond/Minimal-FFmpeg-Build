@@ -30,19 +30,19 @@ jobs:
         submodules: "true"
 
     - name: Setup
-      run: sudo ./build_and_test/10-setup.sh ${{ matrix.target }} "$TAG_VERSION"
+      run: sudo ./build_and_test/10-setup.sh "$TAG_VERSION" ${{ matrix.target }}
       
     - name: Libopenh264
-      run: sudo ./build_and_test/20-libopenh264.sh ${{ matrix.target }} "$TAG_VERSION"
+      run: sudo ./build_and_test/20-libopenh264.sh "$TAG_VERSION" ${{ matrix.target }}
       
     - name: Zlib
-      run: sudo ./build_and_test/20-zlib.sh ${{ matrix.target }} "$TAG_VERSION"
+      run: sudo ./build_and_test/20-zlib.sh "$TAG_VERSION" ${{ matrix.target }}
       
     - name: FFmpeg
-      run: sudo ./build_and_test/60-ffmpeg.sh ${{ matrix.target }} "$TAG_VERSION"
+      run: sudo ./build_and_test/60-ffmpeg.sh "$TAG_VERSION" ${{ matrix.target }}
       
     - name: Test
-      run: sudo ./build_and_test/70-test.sh ${{ matrix.target }} "$TAG_VERSION"
+      run: sudo ./build_and_test/70-test.sh "$TAG_VERSION" ${{ matrix.target }}
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
