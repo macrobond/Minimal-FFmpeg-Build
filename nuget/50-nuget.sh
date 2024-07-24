@@ -44,7 +44,7 @@ echo "$NUGET_CSPROJ" > nuget.csproj
 
 dotnet pack
 
-tar -cfvz nuget.csproj.zip nuget.csproj files
+zip -r nuget.csproj.zip nuget.csproj files
 
 echo ls files/runtimes/win-x64/native/
 ls -lh files/runtimes/win-x64/native/

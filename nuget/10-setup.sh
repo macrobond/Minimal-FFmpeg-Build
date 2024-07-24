@@ -11,4 +11,6 @@ fi
 
 apt-get update -y
 
+test -x "$(command -v zip)" || apt-get install -y zip
+
 test -x "$(command -v dotnet)" || apt-get install -y dotnet-sdk-8.0
