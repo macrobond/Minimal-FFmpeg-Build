@@ -12,21 +12,21 @@ NUGET_CSPROJ="\
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0</TargetFrameworks>
 
+        <PackageId>MinimalFFmpegBuild</PackageId>
         <Version>$VERSION</Version>
         <Authors>Hohan Polson</Authors>
         <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
 
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeBuildOutput>false</IncludeBuildOutput>
+        <ProjectUrl>https://github.com/macrobond/Minimal-FFmpeg-Build</ProjectUrl>
+
     </PropertyGroup>
     <ItemGroup>
         <Content Include=\"files/**/*.*\" Pack=\"true\" PackagePath=\"\">
             <PackageCopyToOutput>true</PackageCopyToOutput>
         </Content>
     </ItemGroup>
-    <Target Name=\"ValidateCommandLine\" BeforeTargets=\"GenerateNuspec\">
-        <Error Text=\"The PackageId property must be set on the command line.\" Condition=\"'\$(PackageId)' == ''\" />
-    </Target>
 </Project>"
 
 echo $NUGET_CSPROJ
@@ -73,11 +73,11 @@ if [[ "$IS_WSL" == "true" ]]; then
     echo $(wslpath -w $output)
 fi
 
-echo nupkg proj tar
-local tar="$working_directory"/nuget.csproj.tar.gz
-echo "$tar"
+echo nupkg proj zip
+zip="$working_directory"/nuget.csproj.zip
+echo "$zip"
 if [[ "$IS_WSL" == "true" ]]; then
-    echo $(wslpath -w $tar)
+    echo $(wslpath -w $zip)
 fi
 
 popd

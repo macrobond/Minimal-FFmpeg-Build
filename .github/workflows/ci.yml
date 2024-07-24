@@ -10,7 +10,7 @@ on:
     branches: [ main, dev ]
 
 env:
-  TAG_VERSION: ${{ github.event.release.tag_name || 'v0,0,0' }}
+  TAG_VERSION: ${{ github.event.release.tag_name || 'v0.0.0' }}
 
 permissions:
   contents: read
