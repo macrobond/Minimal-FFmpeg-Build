@@ -16,9 +16,9 @@ cp -fr $ARTIFACTS/nuget/nuget.csproj.zip nuget.csproj.zip
 APi="\
 {\
 \"version\":\"$VERSION\",\
-\"major\":\"$(echo $VERSION | cut -d. -f1)\",\
-\"minor\":\"$(echo $VERSION | cut -d. -f2)\",\
-\"patch\":\"$(echo $VERSION | cut -d. -f3)\",\
+\"major\":$(echo $VERSION | cut -d. -f1),\
+\"minor\":$(echo $VERSION | cut -d. -f2),\
+\"patch\":$(echo $VERSION | cut -d. -f3),\
 \"path\":\"nuget.csproj.zip\"\
 }"
 

@@ -7,9 +7,7 @@ on:
     tags:
       - v*
   push:
-    branches: [ main, dev ]
   pull_request:
-    branches: [ main, dev ]
 
 env:
   TAG_VERSION: ${{ github.event.release.tag_name || 'v0.0.0' }}
@@ -79,26 +77,29 @@ jobs:
     - name: Page
       run: sudo ./nuget/70-page.sh nuget "$TAG_VERSION"
 
-    - name: Upload Artifact for GitHub Pages
-      uses: actions/upload-artifact@v4
-      with:
-        name: github-pages
-        path: ./artifacts/nuget/page
-
-    - name: 'Upload Release Asset'
-      run: |
-          cd ${{github.workspace}}/artifacts/nuget/nuget
-          gh release upload ${{github.event.release.tag_name}} nuget.csproj.zip
-      env:
-        GITHUB_TOKEN: ${{ github.TOKEN }}
-      shell: bash
-
-    - name: Deploy to GitHub Pages
+    - name: Upload Release Asset
       if: ${{ github.event_name == 'release' }}
-      uses: actions/deploy-pages@v4
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./artifacts/nuget/nuget/nuget.csproj.zip
+        asset_name: nuget.csproj.zip
+        asset_content_type: application/zip
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: nuget
         path: ./artifacts/nuget
+
+    - name: Upload artifact for pages
+      if: ${{ github.event_name == 'release' }}
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./artifacts/nuget/page
+
+    - name: Deploy to GitHub Pages
+      if: ${{ github.event_name == 'release' }}
+      uses: actions/deploy-pages@v4
