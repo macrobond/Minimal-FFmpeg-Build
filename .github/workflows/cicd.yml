@@ -7,7 +7,6 @@ on:
     tags:
       - v*
   push:
-  pull_request:
 
 env:
   TAG_VERSION: ${{ github.event.release.tag_name || 'v0.0.0' }}
