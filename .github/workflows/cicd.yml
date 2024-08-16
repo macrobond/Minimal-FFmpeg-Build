@@ -2,6 +2,8 @@
 name: Continuous Integration
 
 on:
+  release:
+    types: [published]
   push:
 
 env:
