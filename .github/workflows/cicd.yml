@@ -2,10 +2,6 @@
 name: Continuous Integration
 
 on:
-  release:
-    types: [ created ]
-    tags:
-      - v*
   push:
 
 env:
