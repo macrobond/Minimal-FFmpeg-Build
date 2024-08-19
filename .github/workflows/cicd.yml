@@ -4,10 +4,16 @@ name: Continuous Integration
 on:
   release:
     types: [published]
-  push:
+  pull_request:
+
+  workflow_dispatch:
 
 env:
   TAG_VERSION: ${{ github.event.release.tag_name || 'v0.0.0' }}
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   build_and_test:
