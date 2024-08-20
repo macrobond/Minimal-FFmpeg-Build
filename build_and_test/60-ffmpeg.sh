@@ -27,6 +27,10 @@ BEGIN
             VALUE \"FileVersion\",\"$FFMPEG_VER_FILEVERSION_STR\"
         END
     END
+    BLOCK \"VarFileInfo\"
+    BEGIN
+        VALUE \"Translation\", 0x0, 1252 // language neutral - multilingual (decimal)
+    END
 END"
 echo "$FFTOOLSRES_RC" >> fftools/fftoolsres.rc
 
