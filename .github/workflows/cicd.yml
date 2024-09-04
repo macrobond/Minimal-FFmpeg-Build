@@ -11,10 +11,6 @@ on:
 env:
   TAG_VERSION: ${{ github.event.release.tag_name || 'v0.0.0' }}
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
 jobs:
   build_and_test:
     runs-on: ubuntu-22.04
@@ -119,6 +115,10 @@ jobs:
       id-token: write
 
     needs: [ nuget ]
+
+    concurrency:
+      group: pages-concurrency-group
+      cancel-in-progress: false
 
     steps:
     - name: Download Artifact (nuget)
