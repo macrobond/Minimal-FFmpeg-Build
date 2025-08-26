@@ -132,7 +132,7 @@ jobs:
 
     - name: Upload artifact for pages
       if: ${{ github.event_name == 'release' }}
-      uses: actions/upload-pages-artifact@v3
+      uses: actions/upload-pages-artifact@v4
       with:
         path: ./artifacts/nuget/page
 
