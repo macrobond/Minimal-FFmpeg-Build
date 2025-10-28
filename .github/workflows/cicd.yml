@@ -41,7 +41,7 @@ jobs:
       run: sudo ./build_and_test/70-test.sh build_and_test "$TAG_VERSION" ${{ matrix.target }}
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: build_and_test
         path: ./artifacts/build_and_test
@@ -72,7 +72,7 @@ jobs:
       run: sudo ./nuget/70-page.sh nuget "$TAG_VERSION"
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: nuget
         path: ./artifacts/nuget
